@@ -137,7 +137,7 @@ def main():
 
     show = ["sector", "period_end", "liabilities_to_assets", "ocf_to_liabilities",
             "current_ratio", "roa", "net_margin", "altman_z2", "altman_zone",
-            "composite_score", "tier", "equity_vol", "max_drawdown"]
+            "composite_score", "tier", "tier_label", "equity_vol", "max_drawdown"]
     table = scored.sort_values("composite_score", ascending=False)[show]
     print("Credit scorecard — most recent 10-K per company "
           "(SIMPLIFIED EDUCATIONAL MODEL, not a credit rating):\n")

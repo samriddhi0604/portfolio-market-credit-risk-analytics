@@ -1,0 +1,108 @@
+[
+  {
+    "check": "all tickers present",
+    "dataset": "prices",
+    "status": "PASS",
+    "detail": "30/30 tickers"
+  },
+  {
+    "check": "no missing closes",
+    "dataset": "prices",
+    "status": "PASS",
+    "detail": "0 missing values"
+  },
+  {
+    "check": "prices strictly positive",
+    "dataset": "prices",
+    "status": "PASS",
+    "detail": "all > 0"
+  },
+  {
+    "check": "no stale prices (>= 3 identical closes)",
+    "dataset": "prices",
+    "status": "PASS",
+    "detail": "none found"
+  },
+  {
+    "check": "no daily moves > 20%",
+    "dataset": "prices",
+    "status": "WARN",
+    "detail": {
+      "NVDA 2023-05-25": 0.2437,
+      "UNH 2025-04-17": -0.2238,
+      "ORCL 2025-09-10": 0.3595
+    }
+  },
+  {
+    "check": "no date gaps > 5 calendar days",
+    "dataset": "prices",
+    "status": "PASS",
+    "detail": "none"
+  },
+  {
+    "check": "price history is current",
+    "dataset": "prices",
+    "status": "PASS",
+    "detail": "last date 2026-09-30, 3 days before 2026-10-03 00:00:00"
+  },
+  {
+    "check": "OHLC consistent (low <= open,close <= high)",
+    "dataset": "ohlcv",
+    "status": "PASS",
+    "detail": "0 inconsistent rows of 37620"
+  },
+  {
+    "check": "volume non-negative",
+    "dataset": "ohlcv",
+    "status": "PASS",
+    "detail": "0 negative-volume rows"
+  },
+  {
+    "check": "5 fiscal years per company",
+    "dataset": "financials",
+    "status": "PASS",
+    "detail": "25 companies x 5 years"
+  },
+  {
+    "check": "total assets positive",
+    "dataset": "financials",
+    "status": "PASS",
+    "detail": "0 non-positive"
+  },
+  {
+    "check": "liabilities/assets within [0, 1.5]",
+    "dataset": "financials",
+    "status": "PASS",
+    "detail": "all in range"
+  },
+  {
+    "check": "current ratio within (0, 10]",
+    "dataset": "financials",
+    "status": "PASS",
+    "detail": "all in range (NaN excluded)"
+  },
+  {
+    "check": "|net margin| <= 100%",
+    "dataset": "financials",
+    "status": "PASS",
+    "detail": "all in range"
+  },
+  {
+    "check": "balance sheet ties out within 2% (reported liabilities only)",
+    "dataset": "financials",
+    "status": "PASS",
+    "detail": "80 rows tie out"
+  },
+  {
+    "check": "total liabilities reported directly",
+    "dataset": "financials",
+    "status": "WARN",
+    "detail": "derived as assets - equity for: ['ABT', 'HON', 'KO', 'MCD', 'MRK', 'ORCL', 'OXY', 'UPS', 'WMT']"
+  },
+  {
+    "check": "latest 10-K period within 550 days",
+    "dataset": "financials",
+    "status": "PASS",
+    "detail": "all current"
+  }
+]
