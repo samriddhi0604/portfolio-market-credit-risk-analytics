@@ -5,9 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Risk, Measured</title>
     <meta name="description" content="VaR backtesting, historical stress tests and SEC-filing credit scores on real data — a scroll-through explainer." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 fill=%22%2315140f%22/%3E%3Cpath d=%22M5 22 L12 15 L17 19 L27 8%22 stroke=%22%23ff6a45%22 stroke-width=%223%22 fill=%22none%22/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap"
+    />
   </head>
   <body>
-    <main id="app"></main>
+    <div class="preloader" id="preloader" aria-hidden="true">
+      <div class="preloader__inner">
+        <span class="preloader__count" id="preloader-count">0</span><span class="preloader__pct">%</span>
+      </div>
+      <div class="preloader__label" id="preloader-label">Loading fonts &amp; results</div>
+    </div>
+
+    <header class="topbar">
+      <span class="topbar__mark">Risk, Measured</span>
+      <nav class="topbar__nav" aria-label="Sections">
+        <a href="#market">Market risk</a>
+        <a href="#stress">Stress</a>
+        <a href="#credit">Credit</a>
+        <a href="#limits">Limits</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- 1. Hero -->
+      <section class="hero" id="top">
+        <p class="eyebrow hero__eyebrow">Portfolio market &amp; credit risk analytics</p>
+        <h1 class="hero__title" data-hero-title>Real market data. Real SEC filings. Real risk models.</h1>
+        <p class="hero__sub" data-hero-sub>
+          Value-at-Risk that gets backtested — and fails where it should. Stress tests replayed from
+          2008, 2020 and 2022. Credit scores built line by line from 10-K filings.
+        </p>
+        <div class="hero__cue" data-hero-cue>
+          <span>Scroll</span>
+          <span class="hero__cue-line"></span>
+        </div>
+      </section>
+
+      <!-- 2. The question -->
+      <section class="question" id="question">
+        <p class="eyebrow">The question</p>
+        <h2 class="display" data-split>How much can this portfolio lose — and how would we know if we're wrong?</h2>
+        <div class="question__cols">
+          <p data-fade>
+            Every risk number is a forecast. A VaR figure says “on 99 days out of 100, losses stay
+            below this line.” That's a claim you can test, so this project tests it — day by day,
+            out of sample, with the same statistical test a model validation team would use.
+          </p>
+          <p data-fade>
+            VaR can't see past its own history window, so the portfolio is also pushed through real
+            crises. And because market risk is only half the book, 25 companies are credit-scored
+            straight from their SEC filings — with the model's weaknesses on the record.
+          </p>
+        </div>
+      </section>
+
+      <!-- 3. Market risk -->
+      <section class="panel panel--dark market" id="market">
+        <div class="pin" data-pin="market">
+          <div class="pin__copy">
+            <p class="eyebrow">01 — Market risk</p>
+            <h2 class="display" data-split>Market Risk</h2>
+            <ol class="steps" data-steps="market">
+              <li class="steps__item is-active">
+                <h3>Estimate</h3>
+                <p>Each day, a 1-day 99% VaR is computed from the previous 250 trading days only —
+                  historical simulation, with a variance-covariance model alongside for comparison.</p>
+              </li>
+              <li class="steps__item">
+                <h3>Compare</h3>
+                <p>The next day's realised loss is checked against that forecast. A loss beyond the
+                  line is a breach. The line moves; the breaches stay on the record.</p>
+              </li>
+              <li class="steps__item">
+                <h3>Test</h3>
+                <p>The Kupiec proportion-of-failures test asks whether the breach count is
+                  consistent with 1%. Christoffersen's test asks whether breaches cluster.</p>
+              </li>
+            </ol>
+          </div>
+          <div class="pin__visual">
+            <figure class="chart" id="var-chart" aria-label="Realised daily loss versus rolling 99% VaR"></figure>
+          </div>
+        </div>
+        <div class="stats" id="market-stats"></div>
+      </section>
+
+      <!-- 4. Stress testing -->
+      <section class="panel stress" id="stress">
+        <div class="pin" data-pin="stress">
+          <div class="pin__copy">
+            <p class="eyebrow">02 — Stress testing</p>
+            <h2 class="display" data-split>Stress Testing</h2>
+            <p class="lede">VaR is calibrated to the last year. Crises aren't. Each scenario replays
+              what every stock in the portfolio actually did between two real dates.</p>
+          </div>
+          <div class="pin__visual">
+            <div class="beats" id="stress-beats"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Credit scoring -->
+      <section class="panel panel--dark credit" id="credit">
+        <div class="pin" data-pin="credit">
+          <div class="pin__copy">
+            <p class="eyebrow">03 — Credit risk</p>
+            <h2 class="display" data-split>Credit Scoring</h2>
+            <p class="lede">Five ratios and an Altman Z'' score, computed from each company's
+              latest 10-K, percentile-ranked and blended into a 0–100 score. Fixed bands map the
+              score to five tiers.</p>
+            <ul class="weights" id="credit-weights"></ul>
+          </div>
+          <div class="pin__visual">
+            <figure class="chart chart--bars" id="credit-chart" aria-label="Composite credit score by company"></figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Limitations -->
+      <section class="limits" id="limits">
+        <p class="eyebrow">04 — Limitations</p>
+        <h2 class="display display--xl" data-split>Here's where this breaks.</h2>
+        <div class="limits__grid">
+          <article data-fade>
+            <h3>The credit model is not a rating.</h3>
+            <p>It ranks 25 companies on transparent ratios. No business-risk view, no debt
+              structure, no forward projections, no committee. Its agreement with market-implied
+              risk points the right way but isn't statistically significant.</p>
+          </article>
+          <article data-fade>
+            <h3>Thirty stocks are not the market.</h3>
+            <p>A stated list of US large caps, equal-weighted, long-only equity. No bonds, FX or
+              derivatives — so a “rate shock” reaches this book only through equity sensitivities.</p>
+          </article>
+          <article data-fade>
+            <h3>The backtest has limited power.</h3>
+            <p>About four years of out-of-sample days means roughly ten expected 99% breaches.
+              Kupiec can't tell a decent model from a mediocre one with counts that small.</p>
+          </article>
+          <article data-fade>
+            <h3>Survivors only.</h3>
+            <p>The universe was chosen in 2026 from companies that still exist. Replaying 2008 with
+              names that are known to have survived understates what that crisis did to a real book.</p>
+          </article>
+          <article data-fade>
+            <h3>Betas are regime-bound.</h3>
+            <p>Rate sensitivities come from 2021–2026, when yields and energy stocks rose together.
+              Applied to 1994, they describe this decade's correlations, not a law of nature.</p>
+          </article>
+          <article data-fade>
+            <h3>√time is a convenience.</h3>
+            <p>Scaling 1-day VaR to multi-week crises assumes independent returns — the exact thing
+              a crisis breaks. Those comparisons are reference points, not capital numbers.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- 7. Links -->
+      <section class="links" id="links">
+        <h2 class="display" data-split>Check the work.</h2>
+        <p class="links__note">Every number on this page is read from a JSON file that the Python
+          pipeline writes — none of it is restated by hand.</p>
+        <div class="links__row">
+          <a class="btn" href="https://github.com/samriddhi0604/portfolio-market-credit-risk-analytics">GitHub repository →</a>
+          <a class="btn btn--ghost" href="https://github.com/samriddhi0604/portfolio-market-credit-risk-analytics/blob/main/README.md">Methodology &amp; results</a>
+        </div>
+        <p class="links__meta" id="links-meta">Data: Yahoo Finance (prices) · SEC EDGAR companyfacts (10-K financials)</p>
+      </section>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
