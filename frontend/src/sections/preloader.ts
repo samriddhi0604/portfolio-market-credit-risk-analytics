@@ -7,8 +7,8 @@ import gsap from 'gsap';
  * only when every tracked asset has settled. Fires `preloader:complete` on window when done.
  */
 const FONT_FACES = [
-  '900 1em Fraunces',
-  '700 1em Fraunces',
+  '500 1em Newsreader',
+  '600 1em Newsreader',
   '400 1em Inter',
   '500 1em Inter',
   '400 1em "JetBrains Mono"',

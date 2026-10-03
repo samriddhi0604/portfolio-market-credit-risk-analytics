@@ -6,31 +6,52 @@ gsap.registerPlugin(ScrollTrigger);
 
 const SCALE = 0.6; // bar full width = 60% portfolio move, enough for the GFC replay (-49%)
 
+// What each episode was, in one sentence. The numbers shown next to it come from the data.
+const PLAIN: Record<string, string> = {
+  gfc_2008: "The 2008 global financial crisis, measured from the stock market's peak to its lowest point.",
+  covid_2020: 'The month-long crash when COVID-19 shut down much of the world economy.',
+  rates_2022: 'The year US interest rates rose at their fastest pace in decades to fight inflation.',
+  bonds_1994: 'A surprise run of interest-rate rises that caused a bond-market rout.',
+};
+
+function moveWords(spx: number, bp: number) {
+  const mkt = `the US stock market (S&amp;P 500) ${spx < 0 ? 'fell' : 'rose'} ${Math.abs(spx * 100).toFixed(1)}%`;
+  const rate = `the 10-year US interest rate ${bp > 0 ? 'rose' : 'fell'} by ${Math.abs(bp / 100).toFixed(2)} percentage points`;
+  return `Over this period, ${mkt} and ${rate}.`;
+}
+
 function beatHtml(s: Scenario, i: number, n: number) {
   const replay = s.method.startsWith('full');
   const sectors = Object.entries(s.by_sector).sort((a, b) => a[1] - b[1]);
   const maxAbs = Math.max(...sectors.map(([, v]) => Math.abs(v)));
-  const yieldBp = Math.round(s.yield_change_bp);
+  const [worstName, worstVal] = sectors[0];
+  const [bestName, bestVal] = sectors[sectors.length - 1];
+  const notional = results.universe.notional_usd;
+  const takeaway = bestVal > 0
+    ? `Hit hardest: <b>${worstName}</b> (${fmtUsd(worstVal)}). Biggest help: <b>${bestName}</b> (+${fmtUsd(bestVal)}).`
+    : `Hit hardest: <b>${worstName}</b> (${fmtUsd(worstVal)}). Every sector lost money.`;
   return `
   <article class="beat" data-beat="${i}">
-    <div class="beat__meta"><span>${String(i + 1).padStart(2, '0')} / ${String(n).padStart(2, '0')}</span>
+    <div class="beat__meta"><span>Crisis ${i + 1} of ${n}</span>
       <span>${fmtDate(s.start)} → ${fmtDate(s.end)} · ${s.trading_days} trading days</span></div>
     <h3 class="beat__name">${s.name}</h3>
-    <p class="beat__basis">${s.basis}. S&amp;P 500 ${fmtPct(s.spx_return)}, 10Y yield ${yieldBp > 0 ? '+' : '−'}${Math.abs(yieldBp)}bp.</p>
+    <p class="beat__basis">${PLAIN[s.id] ?? s.basis} ${moveWords(s.spx_return, s.yield_change_bp)}</p>
     <div class="beat__pnl ${s.pnl_total < 0 ? 'is-loss' : 'is-gain'}">
       <span class="beat__num" data-target="${s.pnl_pct}">0.0%</span>
-      <span class="beat__usd">${fmtUsd(s.pnl_total)} on ${fmtUsd(results.universe.notional_usd)}</span>
+      <span class="beat__usd">${s.pnl_total < 0 ? 'a loss of' : 'a gain of'} ${fmtUsd(Math.abs(s.pnl_total))} on our ${fmtUsd(notional)} portfolio</span>
     </div>
     <div class="beat__bar"><div class="beat__axis"></div>
       <div class="beat__fill ${s.pnl_total < 0 ? 'is-loss' : 'is-gain'}" style="--w:${Math.min(1, Math.abs(s.pnl_pct) / SCALE)}"></div></div>
-    <p class="beat__method">${replay ? 'Full historical replay: each stock\'s own move between the two dates.'
-      : 'Factor shock: stock-level market and rate betas applied to the real index and yield move — the portfolio\'s stocks have no price history this far back.'}
-      ${replay ? `Linear factor model said ${fmtPct(s.factor_pnl_total / results.universe.notional_usd)}.` : ''}</p>
+    <p class="beat__takeaway">${takeaway}</p>
+    <p class="beat__method">${replay
+      ? `How we measured it: each stock's real price change between these two dates. A simpler shortcut — guessing from how each stock usually follows the market — would have said ${fmtPct(s.factor_pnl_total / notional)}.`
+      : `This one is an estimate: our stock prices don't go back to 1994, so we used how each stock reacts to market and interest-rate moves today.`}</p>
+    <p class="beat__stitle">Gain or loss by sector</p>
     <ul class="beat__sectors">${sectors.map(([k, v]) => `
       <li><span>${k}</span><span class="beat__sbar"><i class="${v < 0 ? 'is-loss' : 'is-gain'}" style="--w:${Math.abs(v) / maxAbs}"></i></span><span>${fmtUsd(v)}</span></li>`).join('')}
     </ul>
-    ${s.worst_day ? `<p class="beat__day">Worst single day, ${fmtDate(s.worst_day.date)}: <b>${fmtPct(s.worst_day.pnl_pct, 2)}</b> —
-      <b>${s.worst_day.loss_to_var.toFixed(2)}×</b> the 1-day 99% VaR of ${fmtUsd(results.stress.var_reference.var_1d_usd)}.</p>` : ''}
+    ${s.worst_day ? `<p class="beat__day">Worst single day, ${fmtDate(s.worst_day.date)}: the portfolio fell <b>${Math.abs(s.worst_day.pnl_pct * 100).toFixed(2)}%</b> —
+      <b>${s.worst_day.loss_to_var.toFixed(1)}×</b> the daily risk limit of ${fmtUsd(results.stress.var_reference.var_1d_usd)}.</p>` : ''}
   </article>`;
 }
 

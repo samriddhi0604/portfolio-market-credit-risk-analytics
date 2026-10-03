@@ -14,6 +14,12 @@ const M = { top: 24, right: 16, bottom: 34, left: 44 };
  * breach marked. The whole chart is revealed left-to-right by a clip rect whose width is scrubbed
  * to scroll progress; a cursor carries the date and the running breach count.
  */
+/** One plain-language test result: the question, a YES/NO tag, what it means, and the test name. */
+function answer(result: 'PASS' | 'FAIL', question: string, meaning: string, test: string) {
+  return `<span class="answer"><b class="tag tag--${result.toLowerCase()}">${result === 'PASS' ? 'YES' : 'NO'}</b>
+    <span><b>${question}</b> ${meaning[0].toUpperCase() + meaning.slice(1)}. <i>${test}</i></span></span>`;
+}
+
 export function buildMarket() {
   const fig = document.getElementById('var-chart')!;
   const { series } = results.backtest;
@@ -61,9 +67,9 @@ export function buildMarket() {
   const legend = document.createElement('figcaption');
   legend.className = 'chart__legend';
   legend.innerHTML = `
-    <span><i class="key key--line"></i>Rolling 99% VaR (historical, ${results.backtest.window_days}d)</span>
-    <span><i class="key key--spike"></i>Realised loss (loss days)</span>
-    <span><i class="key key--dot"></i>Breach</span>`;
+    <span><i class="key key--line"></i>Daily risk limit (99% VaR, from the past ${results.backtest.window_days} trading days)</span>
+    <span><i class="key key--spike"></i>Actual loss that day</span>
+    <span><i class="key key--dot"></i>Breach — loss went past the limit</span>`;
   fig.appendChild(legend);
 
   // Scrub cursor
@@ -76,12 +82,18 @@ export function buildMarket() {
   verdict.className = 'verdict';
   verdict.innerHTML = `
     <div class="verdict__row"><span class="verdict__big">${hist99.actual_breaches}</span>
-      <span>breaches vs <b>${hist99.expected_breaches.toFixed(1)}</b> expected at 99%
-      over ${hist99.test_days} days</span></div>
+      <span>days the loss broke through the limit. Over ${hist99.test_days.toLocaleString('en-US')} trading
+      days, about <b>${Math.round(hist99.expected_breaches)}</b> was the expected number.</span></div>
     <div class="verdict__tests">
-      <span>Kupiec 99% <b class="tag tag--${hist99.kupiec_result.toLowerCase()}">${hist99.kupiec_result}</b> p=${hist99.kupiec_p_value.toFixed(3)}</span>
-      <span>Kupiec 95% <b class="tag tag--${hist95.kupiec_result.toLowerCase()}">${hist95.kupiec_result}</b> p=${hist95.kupiec_p_value.toFixed(3)} · too few breaches</span>
-      <span>Independence 99% <b class="tag tag--${hist99.independence_result.toLowerCase()}">${hist99.independence_result}</b> p=${hist99.christoffersen_ind_p_value.toFixed(4)} · breaches cluster</span>
+      ${answer(hist99.kupiec_result, 'Right number of breaches at 99%?',
+        hist99.kupiec_result === 'PASS' ? 'close enough to 1 in 100 to be normal luck' : hist99.breach_direction === 'too_few' ? 'too few — the limit was set too cautiously' : 'too many — the limit underestimated risk',
+        `Kupiec test, p = ${hist99.kupiec_p_value.toFixed(3)}`)}
+      ${answer(hist95.kupiec_result, 'Right number with a looser 95% limit?',
+        hist95.kupiec_result === 'PASS' ? 'close enough to 1 in 20 to be normal luck' : hist95.breach_direction === 'too_few' ? 'too few — the limit was set too cautiously' : 'too many — the limit underestimated risk',
+        `Kupiec test, p = ${hist95.kupiec_p_value.toFixed(3)}`)}
+      ${answer(hist99.independence_result, 'Were breaches spread out over time?',
+        hist99.independence_result === 'PASS' ? 'yes, no sign of bunching' : 'they bunched together during market turmoil, when the model was slow to react',
+        `Christoffersen test, p = ${hist99.christoffersen_ind_p_value.toFixed(4)}`)}
     </div>`;
   fig.appendChild(verdict);
 
@@ -97,7 +109,7 @@ export function buildMarket() {
     const s = series[i];
     hoverLine.setAttribute('x1', String(x(i))); hoverLine.setAttribute('x2', String(x(i)));
     hoverLine.style.opacity = '1';
-    showTip(`<b>${fmtDate(s.d)}</b><br>${s.loss >= 0 ? 'Loss' : 'Gain'} ${(Math.abs(s.loss) * 100).toFixed(2)}%<br>99% VaR ${(s.var99 * 100).toFixed(2)}%${s.loss > s.var99 ? '<br><em>Breach</em>' : ''}`, e.clientX, e.clientY);
+    showTip(`<b>${fmtDate(s.d)}</b><br>Portfolio ${s.loss >= 0 ? 'lost' : 'gained'} ${(Math.abs(s.loss) * 100).toFixed(2)}%<br>Risk limit that day: ${(s.var99 * 100).toFixed(2)}%${s.loss > s.var99 ? '<br><em>Breach — loss beyond the limit</em>' : ''}`, e.clientX, e.clientY);
   });
   hit.addEventListener('pointerleave', () => { hideTip(); hoverLine.style.opacity = '0'; });
 
@@ -106,13 +118,13 @@ export function buildMarket() {
   const n = results.universe.notional_usd;
   document.getElementById('market-stats')!.innerHTML = `
     <div class="stat"><div class="stat__value" data-count="${Math.round(lv.hist_var * n)}" data-prefix="$"></div>
-      <div class="stat__label">1-day 99% historical VaR on a ${fmtUsd(n)} book (${(lv.hist_var * 100).toFixed(2)}%)</div></div>
+      <div class="stat__label">Today's daily risk limit (99% VaR): on 99 days out of 100, a ${fmtUsd(n)} portfolio shouldn't lose more than this — ${(lv.hist_var * 100).toFixed(2)}% of its value.</div></div>
     <div class="stat"><div class="stat__value" data-count="${Math.round(lv.hist_es * n)}" data-prefix="$"></div>
-      <div class="stat__label">1-day 99% Expected Shortfall — the average loss once VaR is breached</div></div>
+      <div class="stat__label">Expected Shortfall: on that 1 day in 100 when the limit <em>is</em> broken, this is the average loss.</div></div>
     <div class="stat"><div class="stat__value"><span data-count="${hist99.actual_breaches}"></span><span class="stat__of"> / ${hist99.expected_breaches.toFixed(1)}</span></div>
-      <div class="stat__label">Breaches vs expected, ${fmtDate(results.backtest.test_start)} – ${fmtDate(results.backtest.test_end)}</div></div>
+      <div class="stat__label">Breaches seen vs. expected, ${fmtDate(results.backtest.test_start)} – ${fmtDate(results.backtest.test_end)}.</div></div>
     <div class="stat"><div class="stat__value" data-count="${hist99.kupiec_p_value}" data-decimals="3"></div>
-      <div class="stat__label">Kupiec p-value at 99% <span class="stat__tag stat__tag--${hist99.kupiec_result.toLowerCase()}">${hist99.kupiec_result}</span></div></div>`;
+      <div class="stat__label">Test score for the 99% limit (Kupiec p-value). Anything above 0.05 means the breach count fits the model's promise. <span class="stat__tag stat__tag--${hist99.kupiec_result.toLowerCase()}">${hist99.kupiec_result}</span></div></div>`;
 
   return { clipRect, dots, breachIdx, cursor, cursorText, verdict, x, series, W, M };
 }
@@ -130,7 +142,7 @@ export function initMarket(chart: ReturnType<typeof buildMarket>) {
     const idx = Math.round(reveal.p * (series.length - 1));
     const passed = breachIdx.filter((i) => i <= idx).length;
     cursor.setAttribute('transform', `translate(${xi},0)`);
-    cursorText.textContent = `${series[idx].d}  ·  ${passed} breach${passed === 1 ? '' : 'es'}`;
+    cursorText.textContent = `${fmtDate(series[idx].d)}  ·  ${passed} breach${passed === 1 ? '' : 'es'} so far`;
     cursorText.setAttribute('text-anchor', xi > W * 0.7 ? 'end' : 'start');
     cursorText.setAttribute('x', xi > W * 0.7 ? '-6' : '6');
     dots.forEach((d, k) => gsap.to(d, { attr: { r: breachIdx[k] <= idx ? 5 : 0 }, duration: 0.25, overwrite: true }));
