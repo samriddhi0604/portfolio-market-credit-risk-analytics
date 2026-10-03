@@ -1,0 +1,308 @@
+{
+  "var_reference": {
+    "confidence": 0.99,
+    "method": "historical",
+    "var_1d_usd": 259287.06254019547,
+    "es_1d_usd": 347296.04473737767
+  },
+  "scenarios": [
+    {
+      "id": "gfc_2008",
+      "name": "Global Financial Crisis",
+      "basis": "S&P 500 peak-to-trough, 9 Oct 2007 to 9 Mar 2009",
+      "start": "2007-10-09",
+      "end": "2009-03-09",
+      "trading_days": 355,
+      "spx_return": -0.5677538774277282,
+      "yield_change_bp": -176.50001049041748,
+      "method": "full historical replay",
+      "pnl_total": -4909510.530921317,
+      "pnl_pct": -0.49095105309213166,
+      "factor_pnl_total": -4562396.703000754,
+      "attribution": {
+        "by_sector": {
+          "Financials": -1239561.0,
+          "Industrials": -1039112.0,
+          "Technology": -912278.0,
+          "Health Care": -683674.0,
+          "Energy": -683535.0,
+          "Consumer": -351349.0
+        },
+        "largest_losses": {
+          "BAC": -307172.0,
+          "NVDA": -258295.0,
+          "MS": -249832.0,
+          "WFC": -237434.0,
+          "CAT": -232594.0
+        },
+        "largest_gains": {
+          "WMT": 24677.0,
+          "MCD": -9501.0,
+          "ABT": -38660.0,
+          "OXY": -75134.0,
+          "JNJ": -88604.0
+        }
+      },
+      "vs_var_full_window": {
+        "horizon_days": 355,
+        "scaled_var": 4885342.586171082,
+        "scaled_es": 6543558.867698101,
+        "loss": 4909510.530921317,
+        "loss_to_var": 1.0049470317227387,
+        "verdict": "beyond VaR, inside ES"
+      },
+      "worst_day": {
+        "date": "2008-10-15",
+        "spx_return": -0.0903497780862258,
+        "pnl_total": -866643.3452191978,
+        "pnl_pct": -0.08666433452191978,
+        "attribution": {
+          "by_sector": {
+            "Energy": -257185.0,
+            "Industrials": -150415.0,
+            "Technology": -143757.0,
+            "Financials": -134815.0,
+            "Consumer": -91692.0,
+            "Health Care": -88779.0
+          },
+          "largest_losses": {
+            "OXY": -61644.0,
+            "SLB": -61347.0,
+            "MS": -54453.0,
+            "XOM": -46508.0,
+            "COP": -46056.0
+          },
+          "largest_gains": {
+            "KO": 3659.0,
+            "WFC": -1691.0,
+            "ABT": -5476.0,
+            "PFE": -16735.0,
+            "JNJ": -18021.0
+          }
+        },
+        "vs_var_1d": {
+          "horizon_days": 1,
+          "scaled_var": 259287.06254019547,
+          "scaled_es": 347296.04473737767,
+          "loss": 866643.3452191978,
+          "loss_to_var": 3.3424087446894815,
+          "verdict": "beyond ES"
+        }
+      }
+    },
+    {
+      "id": "covid_2020",
+      "name": "COVID-19 crash",
+      "basis": "S&P 500 peak-to-trough, 19 Feb 2020 to 23 Mar 2020",
+      "start": "2020-02-19",
+      "end": "2020-03-23",
+      "trading_days": 23,
+      "spx_return": -0.3392496000265327,
+      "yield_change_bp": -80.60000538825989,
+      "method": "full historical replay",
+      "pnl_total": -3707962.500967423,
+      "pnl_pct": -0.3707962500967423,
+      "factor_pnl_total": -2702658.75220313,
+      "attribution": {
+        "by_sector": {
+          "Energy": -988627.0,
+          "Financials": -766292.0,
+          "Industrials": -632014.0,
+          "Technology": -453271.0,
+          "Health Care": -434075.0,
+          "Consumer": -433684.0
+        },
+        "largest_losses": {
+          "OXY": -255049.0,
+          "BA": -229264.0,
+          "SLB": -208613.0,
+          "COP": -195241.0,
+          "CVX": -170128.0
+        },
+        "largest_gains": {
+          "WMT": -8198.0,
+          "UPS": -43554.0,
+          "MRK": -61185.0,
+          "ORCL": -67641.0,
+          "PFE": -71212.0
+        }
+      },
+      "vs_var_full_window": {
+        "horizon_days": 23,
+        "scaled_var": 1243497.068117426,
+        "scaled_es": 1665573.3192733403,
+        "loss": 3707962.500967423,
+        "loss_to_var": 2.981882785281543,
+        "verdict": "beyond ES"
+      },
+      "worst_day": {
+        "date": "2020-03-16",
+        "spx_return": -0.11984055240393443,
+        "pnl_total": -1243534.9806971974,
+        "pnl_pct": -0.12435349806971974,
+        "attribution": {
+          "by_sector": {
+            "Financials": -242931.0,
+            "Energy": -231322.0,
+            "Technology": -224556.0,
+            "Industrials": -202607.0,
+            "Consumer": -178693.0,
+            "Health Care": -163426.0
+          },
+          "largest_losses": {
+            "BA": -79495.0,
+            "HD": -65979.0,
+            "NVDA": -61507.0,
+            "UNH": -57590.0,
+            "COP": -56299.0
+          },
+          "largest_gains": {
+            "PG": -16277.0,
+            "JNJ": -17772.0,
+            "CAT": -20842.0,
+            "WMT": -21443.0,
+            "KO": -22075.0
+          }
+        },
+        "vs_var_1d": {
+          "horizon_days": 1,
+          "scaled_var": 259287.06254019547,
+          "scaled_es": 347296.04473737767,
+          "loss": 1243534.9806971974,
+          "loss_to_var": 4.795977741868323,
+          "verdict": "beyond ES"
+        }
+      }
+    },
+    {
+      "id": "rates_2022",
+      "name": "2022 rate shock",
+      "basis": "10Y Treasury yield move from 2021 year-end to its Oct 2022 peak",
+      "start": "2021-12-31",
+      "end": "2022-10-21",
+      "trading_days": 203,
+      "spx_return": -0.21262943036246695,
+      "yield_change_bp": 270.0999855995178,
+      "method": "full historical replay",
+      "pnl_total": 228120.07002393113,
+      "pnl_pct": 0.022812007002393112,
+      "factor_pnl_total": -1390807.6033577686,
+      "attribution": {
+        "by_sector": {
+          "Technology": -491255.0,
+          "Financials": -253465.0,
+          "Consumer": -209862.0,
+          "Industrials": -182488.0,
+          "Health Care": -58395.0,
+          "Energy": 1423585.0
+        },
+        "largest_losses": {
+          "NVDA": -191952.0,
+          "HD": -107826.0,
+          "ABT": -104412.0,
+          "CSCO": -101134.0,
+          "BA": -99344.0
+        },
+        "largest_gains": {
+          "OXY": 491194.0,
+          "COP": 264421.0,
+          "XOM": 261429.0,
+          "SLB": 234118.0,
+          "CVX": 172422.0
+        }
+      },
+      "vs_var_full_window": {
+        "horizon_days": 203,
+        "scaled_var": 3694271.9854589505,
+        "scaled_es": 4948206.964761681,
+        "loss": 0.0,
+        "loss_to_var": 0.0,
+        "verdict": "inside VaR"
+      },
+      "worst_day": {
+        "date": "2022-09-13",
+        "spx_return": -0.0432366134006168,
+        "pnl_total": -372156.2357817694,
+        "pnl_pct": -0.03721562357817694,
+        "attribution": {
+          "by_sector": {
+            "Technology": -90410.0,
+            "Industrials": -72201.0,
+            "Financials": -65767.0,
+            "Consumer": -54307.0,
+            "Health Care": -48110.0,
+            "Energy": -41361.0
+          },
+          "largest_losses": {
+            "NVDA": -31575.0,
+            "BA": -23963.0,
+            "HD": -21969.0,
+            "AAPL": -19560.0,
+            "MSFT": -18326.0
+          },
+          "largest_gains": {
+            "ORCL": -4498.0,
+            "COP": -6003.0,
+            "CVX": -6338.0,
+            "WMT": -6881.0,
+            "PG": -6898.0
+          }
+        },
+        "vs_var_1d": {
+          "horizon_days": 1,
+          "scaled_var": 259287.06254019547,
+          "scaled_es": 347296.04473737767,
+          "loss": 372156.2357817694,
+          "loss_to_var": 1.4353058426279044,
+          "verdict": "beyond ES"
+        }
+      }
+    },
+    {
+      "id": "bonds_1994",
+      "name": "1994 bond massacre",
+      "basis": "10Y Treasury yield trough-to-peak, 15 Oct 1993 to 7 Nov 1994",
+      "start": "1993-10-15",
+      "end": "1994-11-07",
+      "trading_days": 268,
+      "spx_return": -0.01369540506023681,
+      "yield_change_bp": 283.29997062683105,
+      "method": "factor shock (linear betas)",
+      "pnl_total": 161811.42478092757,
+      "pnl_pct": 0.016181142478092755,
+      "factor_pnl_total": 161811.42478092757,
+      "attribution": {
+        "by_sector": {
+          "Consumer": -129634.0,
+          "Health Care": -76211.0,
+          "Industrials": 7839.0,
+          "Technology": 12201.0,
+          "Financials": 103185.0,
+          "Energy": 244431.0
+        },
+        "largest_losses": {
+          "HD": -60064.0,
+          "PFE": -27441.0,
+          "PG": -24371.0,
+          "ABT": -21690.0,
+          "KO": -18722.0
+        },
+        "largest_gains": {
+          "COP": 58359.0,
+          "SLB": 54938.0,
+          "OXY": 52258.0,
+          "XOM": 41935.0,
+          "WFC": 41260.0
+        }
+      },
+      "vs_var_full_window": {
+        "horizon_days": 268,
+        "scaled_var": 4244712.152148109,
+        "scaled_es": 5685481.284902866,
+        "loss": 0.0,
+        "loss_to_var": 0.0,
+        "verdict": "inside VaR"
+      }
+    }
+  ]
+}
